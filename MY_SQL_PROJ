@@ -1,0 +1,592 @@
+mysql> USE PROJ
+Database changed
+mysql> CREATE DATABASE OTTPlatformManagement;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> Terminal close -- exit!
+mysql> CREATE DATABASE OTTPlatformManagement;
+ERROR 1007 (HY000): Can't create database 'ottplatformmanagement'; database exists
+mysql> USE OTTPlatformManagement;
+Database changed
+mysql> CREATE TABLE Users (
+    ->     user_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     user_name VARCHAR(100) NOT NULL,
+    ->     email VARCHAR(100) UNIQUE,
+    ->     phone VARCHAR(15) UNIQUE
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> CREATE TABLE Subscriptions (
+    ->     subscription_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     plan_name VARCHAR(50) NOT NULL,
+    ->     price DECIMAL(8,2),
+    ->     duration_months INT
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE Content (
+    ->     content_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     title VARCHAR(100) NOT NULL,
+    ->     genre VARCHAR(50),
+    ->     release_year INT
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE WatchHistory (
+    ->     watch_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     watch_date DATE,
+    ->     watch_duration INT,
+    -> 
+    ->     user_id INT,
+    ->     subscription_id INT,
+    ->     content_id INT,
+    -> 
+    ->     FOREIGN KEY (user_id)
+    ->         REFERENCES Users(user_id),
+    -> 
+    ->     FOREIGN KEY (subscription_id)
+    ->         REFERENCES Subscriptions(subscription_id),
+    -> 
+    ->     FOREIGN KEY (content_id)
+    ->         REFERENCES Content(content_id)
+    -> );
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> INSERT INTO Users(user_name, email, phone)
+    -> VALUES
+    -> ('Rahul Sharma','rahul@gmail.com','9876543210'),
+    -> ('Priya Reddy','priya@gmail.com','9876543211'),
+    -> ('Arjun Kumar','arjun@gmail.com','9876543212'),
+    -> ('Sneha Patel','sneha@gmail.com','9876543213'),
+    -> ('Vikram Singh','vikram@gmail.com','9876543214'),
+    -> ('Ananya Das','ananya@gmail.com','9876543215');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Subscriptions(plan_name, price, duration_months)
+    -> VALUES
+    -> ('Mobile',149,1),
+    -> ('Basic',199,1),
+    -> ('Standard',499,3),
+    -> ('Premium',649,3),
+    -> ('Annual Standard',1499,12),
+    -> ('Annual Premium',1999,12);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Content(title, genre, release_year)
+    -> VALUES
+    -> ('Stranger Things','Sci-Fi',2022),
+    -> ('Money Heist','Thriller',2021),
+    -> ('The Family Man','Action',2021),
+    -> ('Wednesday','Fantasy',2022),
+    -> ('Mirzapur','Crime',2020),
+    -> ('Panchayat','Comedy',2024);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO WatchHistory
+    -> (watch_date, watch_duration,
+    ->  user_id, subscription_id, content_id)
+    -> VALUES
+    -> ('2026-06-21',120,1,1,1),
+    -> ('2026-06-21',90,2,2,2),
+    -> ('2026-06-22',150,3,3,3),
+    -> ('2026-06-22',80,4,4,4),
+    -> ('2026-06-23',110,5,5,5),
+    -> ('2026-06-23',100,6,6,6);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> SELECT*FROM Users;
++---------+--------------+------------------+------------+
+| user_id | user_name    | email            | phone      |
++---------+--------------+------------------+------------+
+|       1 | Rahul Sharma | rahul@gmail.com  | 9876543210 |
+|       2 | Priya Reddy  | priya@gmail.com  | 9876543211 |
+|       3 | Arjun Kumar  | arjun@gmail.com  | 9876543212 |
+|       4 | Sneha Patel  | sneha@gmail.com  | 9876543213 |
+|       5 | Vikram Singh | vikram@gmail.com | 9876543214 |
+|       6 | Ananya Das   | ananya@gmail.com | 9876543215 |
++---------+--------------+------------------+------------+
+6 rows in set (0.01 sec)
+
+mysql> SELECT*FROM Subscriptions;
++-----------------+-----------------+---------+-----------------+
+| subscription_id | plan_name       | price   | duration_months |
++-----------------+-----------------+---------+-----------------+
+|               1 | Mobile          |  149.00 |               1 |
+|               2 | Basic           |  199.00 |               1 |
+|               3 | Standard        |  499.00 |               3 |
+|               4 | Premium         |  649.00 |               3 |
+|               5 | Annual Standard | 1499.00 |              12 |
+|               6 | Annual Premium  | 1999.00 |              12 |
++-----------------+-----------------+---------+-----------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT*FROM Content;
++------------+-----------------+----------+--------------+
+| content_id | title           | genre    | release_year |
++------------+-----------------+----------+--------------+
+|          1 | Stranger Things | Sci-Fi   |         2022 |
+|          2 | Money Heist     | Thriller |         2021 |
+|          3 | The Family Man  | Action   |         2021 |
+|          4 | Wednesday       | Fantasy  |         2022 |
+|          5 | Mirzapur        | Crime    |         2020 |
+|          6 | Panchayat       | Comedy   |         2024 |
++------------+-----------------+----------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT*FROM WatchHistory;
++----------+------------+----------------+---------+-----------------+------------+
+| watch_id | watch_date | watch_duration | user_id | subscription_id | content_id |
++----------+------------+----------------+---------+-----------------+------------+
+|        1 | 2026-06-21 |            120 |       1 |               1 |          1 |
+|        2 | 2026-06-21 |             90 |       2 |               2 |          2 |
+|        3 | 2026-06-22 |            150 |       3 |               3 |          3 |
+|        4 | 2026-06-22 |             80 |       4 |               4 |          4 |
+|        5 | 2026-06-23 |            110 |       5 |               5 |          5 |
+|        6 | 2026-06-23 |            100 |       6 |               6 |          6 |
++----------+------------+----------------+---------+-----------------+------------+
+6 rows in set (0.00 sec)
+
+mysql> Terminal close -- exit!
+mysql> USE OTTPlatformManagement;
+Database changed
+mysql> SHOW TABLES;
++---------------------------------+
+| Tables_in_ottplatformmanagement |
++---------------------------------+
+| content                         |
+| subscriptions                   |
+| users                           |
+| watchhistory                    |
++---------------------------------+
+4 rows in set (0.04 sec)
+
+mysql> SELECT*FROM Users;
++---------+--------------+------------------+------------+
+| user_id | user_name    | email            | phone      |
++---------+--------------+------------------+------------+
+|       1 | Rahul Sharma | rahul@gmail.com  | 9876543210 |
+|       2 | Priya Reddy  | priya@gmail.com  | 9876543211 |
+|       3 | Arjun Kumar  | arjun@gmail.com  | 9876543212 |
+|       4 | Sneha Patel  | sneha@gmail.com  | 9876543213 |
+|       5 | Vikram Singh | vikram@gmail.com | 9876543214 |
+|       6 | Ananya Das   | ananya@gmail.com | 9876543215 |
++---------+--------------+------------------+------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT*FROM Subscriptions;
++-----------------+-----------------+---------+-----------------+
+| subscription_id | plan_name       | price   | duration_months |
++-----------------+-----------------+---------+-----------------+
+|               1 | Mobile          |  149.00 |               1 |
+|               2 | Basic           |  199.00 |               1 |
+|               3 | Standard        |  499.00 |               3 |
+|               4 | Premium         |  649.00 |               3 |
+|               5 | Annual Standard | 1499.00 |              12 |
+|               6 | Annual Premium  | 1999.00 |              12 |
++-----------------+-----------------+---------+-----------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT*FROM Content;
++------------+-----------------+----------+--------------+
+| content_id | title           | genre    | release_year |
++------------+-----------------+----------+--------------+
+|          1 | Stranger Things | Sci-Fi   |         2022 |
+|          2 | Money Heist     | Thriller |         2021 |
+|          3 | The Family Man  | Action   |         2021 |
+|          4 | Wednesday       | Fantasy  |         2022 |
+|          5 | Mirzapur        | Crime    |         2020 |
+|          6 | Panchayat       | Comedy   |         2024 |
++------------+-----------------+----------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT*FROM WatchHistory
+    -> ;
++----------+------------+----------------+---------+-----------------+------------+
+| watch_id | watch_date | watch_duration | user_id | subscription_id | content_id |
++----------+------------+----------------+---------+-----------------+------------+
+|        1 | 2026-06-21 |            120 |       1 |               1 |          1 |
+|        2 | 2026-06-21 |             90 |       2 |               2 |          2 |
+|        3 | 2026-06-22 |            150 |       3 |               3 |          3 |
+|        4 | 2026-06-22 |             80 |       4 |               4 |          4 |
+|        5 | 2026-06-23 |            110 |       5 |               5 |          5 |
+|        6 | 2026-06-23 |            100 |       6 |               6 |          6 |
++----------+------------+----------------+---------+-----------------+------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 1. Display all users with their email IDs.
+mysql> SELECT user_name, email
+    -> FROM Users;
++--------------+------------------+
+| user_name    | email            |
++--------------+------------------+
+| Rahul Sharma | rahul@gmail.com  |
+| Priya Reddy  | priya@gmail.com  |
+| Arjun Kumar  | arjun@gmail.com  |
+| Sneha Patel  | sneha@gmail.com  |
+| Vikram Singh | vikram@gmail.com |
+| Ananya Das   | ananya@gmail.com |
++--------------+------------------+
+6 rows in set (0.00 sec)
+
+mysql> Terminal close -- exit!
+mysql> useOTTPlatformManagement;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'useOTTPlatformManagement' at line 1
+mysql> use OTTPlatformManagement;
+Database changed
+mysql> SELECT*FROM Users;
++---------+--------------+------------------+------------+
+| user_id | user_name    | email            | phone      |
++---------+--------------+------------------+------------+
+|       1 | Rahul Sharma | rahul@gmail.com  | 9876543210 |
+|       2 | Priya Reddy  | priya@gmail.com  | 9876543211 |
+|       3 | Arjun Kumar  | arjun@gmail.com  | 9876543212 |
+|       4 | Sneha Patel  | sneha@gmail.com  | 9876543213 |
+|       5 | Vikram Singh | vikram@gmail.com | 9876543214 |
+|       6 | Ananya Das   | ananya@gmail.com | 9876543215 |
++---------+--------------+------------------+------------+
+6 rows in set (0.02 sec)
+
+mysql> SELECT*FROM Subscriptions;
++-----------------+-----------------+---------+-----------------+
+| subscription_id | plan_name       | price   | duration_months |
++-----------------+-----------------+---------+-----------------+
+|               1 | Mobile          |  149.00 |               1 |
+|               2 | Basic           |  199.00 |               1 |
+|               3 | Standard        |  499.00 |               3 |
+|               4 | Premium         |  649.00 |               3 |
+|               5 | Annual Standard | 1499.00 |              12 |
+|               6 | Annual Premium  | 1999.00 |              12 |
++-----------------+-----------------+---------+-----------------+
+6 rows in set (0.01 sec)
+
+mysql> SELECT*FROM Content;
++------------+-----------------+----------+--------------+
+| content_id | title           | genre    | release_year |
++------------+-----------------+----------+--------------+
+|          1 | Stranger Things | Sci-Fi   |         2022 |
+|          2 | Money Heist     | Thriller |         2021 |
+|          3 | The Family Man  | Action   |         2021 |
+|          4 | Wednesday       | Fantasy  |         2022 |
+|          5 | Mirzapur        | Crime    |         2020 |
+|          6 | Panchayat       | Comedy   |         2024 |
++------------+-----------------+----------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT*FROM WatchHistory;
++----------+------------+----------------+---------+-----------------+------------+
+| watch_id | watch_date | watch_duration | user_id | subscription_id | content_id |
++----------+------------+----------------+---------+-----------------+------------+
+|        1 | 2026-06-21 |            120 |       1 |               1 |          1 |
+|        2 | 2026-06-21 |             90 |       2 |               2 |          2 |
+|        3 | 2026-06-22 |            150 |       3 |               3 |          3 |
+|        4 | 2026-06-22 |             80 |       4 |               4 |          4 |
+|        5 | 2026-06-23 |            110 |       5 |               5 |          5 |
+|        6 | 2026-06-23 |            100 |       6 |               6 |          6 |
++----------+------------+----------------+---------+-----------------+------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 2. Display all content released after 2021.
+mysql> SELECT title,release_year FROM Content WHERE release_year>2021;
++-----------------+--------------+
+| title           | release_year |
++-----------------+--------------+
+| Stranger Things |         2022 |
+| Wednesday       |         2022 |
+| Panchayat       |         2024 |
++-----------------+--------------+
+3 rows in set (0.01 sec)
+
+mysql> -- 3. Display each user's name along with the subscription plan they have.
+mysql> SELECT U.users,s.plan_name
+    -> FROM USERS U
+    -> JOIN WatchHistory W
+    -> ON U.user_id = W.subscription_id
+    -> JOIN Subscriptions
+    -> ON S.subscription_id = W.subscription_id;
+ERROR 1054 (42S22): Unknown column 'U.users' in 'field list'
+mysql> SELECT U.users,s.plan_name
+    -> ^C
+mysql> SELECT U.user_name,s.plan_name
+    -> FROM USERS U
+    -> JOIN WatchHistory W
+    -> ON U.user_id = W.subscription_id
+    -> JOIN Subscriptions
+    -> ON S.subscription_id = W.subscription_id;
+ERROR 1054 (42S22): Unknown column 's.plan_name' in 'field list'
+mysql> ^C
+mysql> SELECT U.users,s.plan_name
+    -> ^C
+mysql> SELECT U.user_name,s.plan_name
+    -> FROM USERS U
+    -> JOIN WatchHistory W
+    -> ON U.user_id = W.subscription_id
+    -> JOIN Subscriptions s
+    -> ON S.subscription_id = W.subscription_id;
++--------------+-----------------+
+| user_name    | plan_name       |
++--------------+-----------------+
+| Rahul Sharma | Mobile          |
+| Priya Reddy  | Basic           |
+| Arjun Kumar  | Standard        |
+| Sneha Patel  | Premium         |
+| Vikram Singh | Annual Standard |
+| Ananya Das   | Annual Premium  |
++--------------+-----------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 4. Display the title watched by each user.
+mysql> SELECT U.user_name,C.title
+    -> FROM users U
+    -> JOIN WatchHistory W
+    -> ON C.content_id = W.subscription_id
+    -> JOIN Content C
+    -> ON C.content_id=W.content_id;
+ERROR 1054 (42S22): Unknown column 'C.content_id' in 'on clause'
+mysql> SELECT U.user_name,C.title
+    -> FROM users U
+    -> JOIN WatchHistory W
+    -> ON U.user_idW.user_id
+    -> JOIN Content C
+    -> ON C.content_id = W.content_id
+    -> ;
+ERROR 1054 (42S22): Unknown column 'u.user_idW.user_id' in 'on clause'
+mysql> SELECT U.user_name,C.title
+    -> FROM users U
+    -> JOIN WatchHistory W
+    -> ON U.user_id=W.user_id
+    -> JOIN Content C
+    -> ON C.content_id = W.content_id;
++--------------+-----------------+
+| user_name    | title           |
++--------------+-----------------+
+| Rahul Sharma | Stranger Things |
+| Priya Reddy  | Money Heist     |
+| Arjun Kumar  | The Family Man  |
+| Sneha Patel  | Wednesday       |
+| Vikram Singh | Mirzapur        |
+| Ananya Das   | Panchayat       |
++--------------+-----------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 5. Display complete watch history with user, subscription, and content details.
+mysql> select u.user_name,s.plan_name,c.title,w.watch_date,w.watch_duration
+    -> from WatchHistory w
+    -> join users u
+    -> on u.user_id=w.user_id
+    -> join Content c
+    -> on c.content_id=w.content_id
+    -> join Subscriptions s
+    -> on s.subscription_id=w.subscription_id;
++--------------+-----------------+-----------------+------------+----------------+
+| user_name    | plan_name       | title           | watch_date | watch_duration |
++--------------+-----------------+-----------------+------------+----------------+
+| Rahul Sharma | Mobile          | Stranger Things | 2026-06-21 |            120 |
+| Priya Reddy  | Basic           | Money Heist     | 2026-06-21 |             90 |
+| Arjun Kumar  | Standard        | The Family Man  | 2026-06-22 |            150 |
+| Sneha Patel  | Premium         | Wednesday       | 2026-06-22 |             80 |
+| Vikram Singh | Annual Standard | Mirzapur        | 2026-06-23 |            110 |
+| Ananya Das   | Annual Premium  | Panchayat       | 2026-06-23 |            100 |
++--------------+-----------------+-----------------+------------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> select u.user_name,c.title,w.watch_duration
+    -> from WatchHistory w
+    -> join users u
+    -> on u.user_id=w.user_id
+    -> join Content c
+    -> on c.content_id=w.content_id
+    -> where(select max(watch_duration) from WatchHistory);
++--------------+-----------------+----------------+
+| user_name    | title           | watch_duration |
++--------------+-----------------+----------------+
+| Rahul Sharma | Stranger Things |            120 |
+| Priya Reddy  | Money Heist     |             90 |
+| Arjun Kumar  | The Family Man  |            150 |
+| Sneha Patel  | Wednesday       |             80 |
+| Vikram Singh | Mirzapur        |            110 |
+| Ananya Das   | Panchayat       |            100 |
++--------------+-----------------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> select u.user_name,c.title,w.watch_duration
+    -> from WatchHistory w
+    -> join users u
+    -> on u.user_id=w.user_id
+    -> join Content c
+    -> on c.content_id=w.content_id
+    -> where w.watch_duration=select max(watch_duration) from WatchHistory;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select max(watch_duration) from WatchHistory' at line 7
+mysql> select u.user_name,c.title,w.watch_duration
+    -> from WatchHistory w
+    -> join users u
+    -> on u.user_id=w.user_id
+    -> join Content c
+    -> on c.content_id=w.content_id
+    -> where w.watch_duration=(select MAX(watch_duration) from WatchHistory);
++-------------+----------------+----------------+
+| user_name   | title          | watch_duration |
++-------------+----------------+----------------+
+| Arjun Kumar | The Family Man |            150 |
++-------------+----------------+----------------+
+1 row in set (0.00 sec)
+
+mysql> Terminal close -- exit!
+mysql>  -- 5. Display complete watch history with user, subscription, and content details.
+mysql> SELECT
+    ->     W.watch_id,
+    ->     U.user_name,
+    ->     S.plan_name,
+    ->     C.title,
+    ->     W.watch_date,
+    ->     W.watch_duration
+    -> FROM WatchHistory W
+    -> JOIN Users U
+    -> ON W.user_id = U.user_id
+    -> JOIN Subscriptions S
+    -> ON W.subscription_id = S.subscription_id
+    -> JOIN Content C
+    -> ON W.content_id = C.content_id;
+ERROR 1046 (3D000): No database selected
+mysql> show database;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'database' at line 1
+mysql> show databases;
++-----------------------+
+| Database              |
++-----------------------+
+| bookstore_db          |
+| emp_samp              |
+| information_schema    |
+| instagram_clone_db    |
+| mysql                 |
+| ottplatformmanagement |
+| peddi                 |
+| performance_schema    |
+| pfs_02                |
+| proj                  |
+| studentdb             |
+| sys                   |
++-----------------------+
+12 rows in set (0.13 sec)
+
+mysql> use ottplatformmanagement;
+Database changed
+mysql>  -- 5. Display complete watch history with user, subscription, and content details.
+mysql> SELECT
+    ->     W.watch_id,
+    ->     U.user_name,
+    ->     S.plan_name,
+    ->     C.title,
+    ->     W.watch_date,
+    ->     W.watch_duration
+    -> FROM WatchHistory W
+    -> JOIN Users U
+    -> ON W.user_id = U.user_id
+    -> JOIN Subscriptions S
+    -> ON W.subscription_id = S.subscription_id
+    -> JOIN Content C
+    -> ON W.content_id = C.content_id;
++----------+--------------+-----------------+-----------------+------------+----------------+
+| watch_id | user_name    | plan_name       | title           | watch_date | watch_duration |
++----------+--------------+-----------------+-----------------+------------+----------------+
+|        1 | Rahul Sharma | Mobile          | Stranger Things | 2026-06-21 |            120 |
+|        2 | Priya Reddy  | Basic           | Money Heist     | 2026-06-21 |             90 |
+|        3 | Arjun Kumar  | Standard        | The Family Man  | 2026-06-22 |            150 |
+|        4 | Sneha Patel  | Premium         | Wednesday       | 2026-06-22 |             80 |
+|        5 | Vikram Singh | Annual Standard | Mirzapur        | 2026-06-23 |            110 |
+|        6 | Ananya Das   | Annual Premium  | Panchayat       | 2026-06-23 |            100 |
++----------+--------------+-----------------+-----------------+------------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 6. Display all premium subscription plans (price greater than 500).
+mysql> SELECT plan_name, price
+    -> FROM Subscriptions
+    -> WHERE price > 500;
++-----------------+---------+
+| plan_name       | price   |
++-----------------+---------+
+| Premium         |  649.00 |
+| Annual Standard | 1499.00 |
+| Annual Premium  | 1999.00 |
++-----------------+---------+
+3 rows in set (0.00 sec)
+
+mysql> -- 7. Display all content in the 'Action' genre.
+mysql> SELECT title, genre
+    -> FROM Content
+    -> WHERE genre = 'Action';
++----------------+--------+
+| title          | genre  |
++----------------+--------+
+| The Family Man | Action |
++----------------+--------+
+1 row in set (0.00 sec)
+
+mysql> -- 8. Display users whose phone number ends with '15'.
+mysql> SELECT user_name, phone
+    -> FROM Users
+    -> WHERE phone LIKE '%15';
++------------+------------+
+| user_name  | phone      |
++------------+------------+
+| Ananya Das | 9876543215 |
++------------+------------+
+1 row in set (0.00 sec)
+
+mysql> -- 9. Display each user's name and the number of minutes they watched.
+mysql> SELECT U.user_name, W.watch_duration
+    -> FROM Users U
+    -> JOIN WatchHistory W
+    -> ON U.user_id = W.user_id;
++--------------+----------------+
+| user_name    | watch_duration |
++--------------+----------------+
+| Rahul Sharma |            120 |
+| Priya Reddy  |             90 |
+| Arjun Kumar  |            150 |
+| Sneha Patel  |             80 |
+| Vikram Singh |            110 |
+| Ananya Das   |            100 |
++--------------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 10. Display the content title and its genre along with the user who watched it.
+mysql> SELECT U.user_name, C.title, C.genre
+    -> FROM WatchHistory W
+    -> JOIN Users U
+    -> ON W.user_id = U.user_id
+    -> JOIN Content C
+    -> ON W.content_id = C.content_id;
++--------------+-----------------+----------+
+| user_name    | title           | genre    |
++--------------+-----------------+----------+
+| Rahul Sharma | Stranger Things | Sci-Fi   |
+| Priya Reddy  | Money Heist     | Thriller |
+| Arjun Kumar  | The Family Man  | Action   |
+| Sneha Patel  | Wednesday       | Fantasy  |
+| Vikram Singh | Mirzapur        | Crime    |
+| Ananya Das   | Panchayat       | Comedy   |
++--------------+-----------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> -- 11. Display users who watched content for more than 100 minutes.
+mysql> SELECT U.user_name, C.title, W.watch_duration
+    -> FROM WatchHistory W
+    -> JOIN Users U
+    -> ON W.user_id = U.user_id
+    -> JOIN Content C
+    -> ON W.content_id = C.content_id
+    -> WHERE W.watch_duration > 100;
++--------------+-----------------+----------------+
+| user_name    | title           | watch_duration |
++--------------+-----------------+----------------+
+| Rahul Sharma | Stranger Things |            120 |
+| Arjun Kumar  | The Family Man  |            150 |
+| Vikram Singh | Mirzapur        |            110 |
++--------------+-----------------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> Terminal close -- exit!
